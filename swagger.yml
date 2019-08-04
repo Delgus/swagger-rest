@@ -1,0 +1,124 @@
+consumes:
+  - application/json
+info:
+  title: library
+  version: 0.0.1
+paths:
+  /books:
+    get:
+      summary: Get all books
+      parameters:
+        - in: query
+          name: author
+          type: string
+          description: Author for search book
+        - in: query
+          name: title
+          type: string
+          description: Title for search book
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ArrayOfBooks'
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create a new book.
+      parameters:
+        - in: body
+          name: book
+          description: The book to create.
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        201:
+          description: Created
+        500:
+          description: Internal Server Error
+    put:
+      summary: Update a book by ID
+      parameters:
+        - in: body
+          name: book
+          description: The book to create.
+          schema:
+            $ref: '#/definitions/Book'
+      responses:
+        204:
+          description: No Content
+        500:
+          description: Internal Server Error
+  /books/{bookID}:
+    parameters:
+      - in: path
+        name: bookID
+        type: integer
+        required: true
+        minimum: 1
+        description: Numeric ID of the book to get
+    get:
+      summary: Get a book by ID
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Book'
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete a book by ID
+      responses:
+        204:
+          description: No Content
+        500:
+          description: Internal Server Error
+produces:
+  - application/json
+schemes:
+  - http
+swagger: "2.0"
+definitions:
+  ArrayOfBooks:
+    type: array
+    items:
+      $ref: '#/definitions/Book'
+    example:
+      - id: 1
+        author: Puskin
+        title: Skazki
+      - id: 2
+        author: Krilov
+        title: Basni
+  Book:
+    type: object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: ID of the book
+      author:
+        type: string
+        description: The author name of the book
+      title:
+        type: string
+        description: The book title
+    required:
+      - author
+      - title
+      - id
+    example:
+        id: 1
+        author: Puskin
+        title: Skazki
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
